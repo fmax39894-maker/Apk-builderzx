@@ -1,3 +1,0 @@
-package com.starfloat.overlay;
-import android.accessibilityservice.AccessibilityService;import android.view.accessibility.*;import android.os.Bundle;
-public class PasteService extends AccessibilityService {static PasteService active;public void onServiceConnected(){active=this;}public void onAccessibilityEvent(AccessibilityEvent e){}public void onInterrupt(){}public void onDestroy(){active=null;super.onDestroy();}static boolean paste(){if(active==null)return false;AccessibilityNodeInfo root=active.getRootInActiveWindow();if(root==null)return false;AccessibilityNodeInfo n=root.findFocus(AccessibilityNodeInfo.FOCUS_INPUT);if(n==null)return false;return n.performAction(AccessibilityNodeInfo.ACTION_PASTE,new Bundle());}}
