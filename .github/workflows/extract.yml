@@ -1,0 +1,53 @@
+
+name: Extract Craft X AI ZIP
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract project ZIP
+        run: |
+          set -e
+          ZIP="CraftXAI-Android-Test-Project.zip"
+
+          if [ ! -f "$ZIP" ]; then
+            echo "ZIP file not found in repository root."
+            ls -la
+            exit 1
+          fi
+
+          mkdir -p /tmp/craftx
+          unzip -o "$ZIP" -d /tmp/craftx
+
+          PROJECT="/tmp/craftx/CraftXAI-Android-Test"
+
+          if [ ! -d "$PROJECT" ]; then
+            echo "Expected project folder not found."
+            find /tmp/craftx -maxdepth 3 -type f
+            exit 1
+          fi
+
+          cp -a "$PROJECT"/. .
+          rm -rf .github/workflows
+          mkdir -p .github/workflows
+          cp -a "$PROJECT/.github/workflows/." .github/workflows/
+
+          rm -f "$ZIP"
+
+      - name: Commit extracted files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Extract Craft X AI Android project" || echo "No changes"
+          git push
