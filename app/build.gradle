@@ -1,0 +1,16 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.detectorpro.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.detectorpro.app'
+        minSdk 23
+        targetSdk 35
+        versionCode 4
+        versionName '2.0'
+    }
+}
