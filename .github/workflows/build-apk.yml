@@ -33,34 +33,12 @@ jobs:
         with:
           packages: platform-tools
 
-      - name: Locate Android project
-        id: project
-        shell: bash
-        run: |
-          if [ -f "gradlew" ]; then
-            echo "project_dir=." >> "$GITHUB_OUTPUT"
-          elif [ -f "detector-pro/gradlew" ]; then
-            echo "project_dir=detector-pro" >> "$GITHUB_OUTPUT"
-          else
-            echo "ERROR: gradlew was not found."
-            echo "Repository files:"
-            ls -la
-            exit 1
-          fi
-
       - name: Build debug APK
-        shell: bash
-        run: |
-          PROJECT_DIR="${{ steps.project.outputs.project_dir }}"
-          cd "$PROJECT_DIR"
-          chmod +x gradlew
-          ./gradlew --no-daemon assembleDebug
+        run: gradle --no-daemon assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: detector-pro-debug-apk
-          path: |
-            app/build/outputs/apk/debug/app-debug.apk
-            detector-pro/app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
